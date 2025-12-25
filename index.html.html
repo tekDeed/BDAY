@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ A Special Birthday Album ✨</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16.png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --deep-blue: #1a237e;
+            --rose-gold: #b76e79;
+            --cream: #faf7f2;
+            --dark: #0a0e27;
+            --accent: #ff6b9d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a237e 50%, #2c3e88 100%);
+            overflow-x: hidden;
+            color: var(--cream);
+        }
+
+        /* Passcode Screen with Particles */
+        #passcode-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a237e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        #passcode-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float-particle 3s infinite ease-in-out;
+        }
+
+        @keyframes float-particle {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
+            50% { transform: translateY(-20px) translateX(10px); opacity: 1; }
+        }
+
+        .passcode-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 4rem 3rem;
+            border-radius: 30px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 30px 90px rgba(0,0,0,0.5), inset 0 0 80px rgba(212, 175, 55, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            animation: glow-pulse 3s infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 30px 90px rgba(0,0,0,0.5), inset 0 0 80px rgba(212, 175, 55, 0.1); }
+            50% { box-shadow: 0 30px 90px rgba(0,0,0,0.5), inset 0 0 100px rgba(212, 175, 55, 0.2); }
+        }
+
+        .passcode-box h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .passcode-box p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .passcode-input-group {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .passcode-digit {
+            width: 60px;
+            height: 70px;
+            font-size: 2rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            border-radius: 15px;
+            color: var(--cream);
+            font-family: 'Raleway', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .passcode-digit:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            transform: scale(1.05);
+        }
+
+        .unlock-btn {
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--gold) 0%, #f4d03f 100%);
+            color: var(--dark);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            font-family: 'Raleway', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .unlock-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5);
+        }
+
+        .error-msg {
+            color: var(--accent);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-msg.show {
+            opacity: 1;
+        }
+
+        /* Main Album Container */
+        #album-container {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            pointer-events: none;
+        }
+
+        #album-container.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .album-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            perspective: 2000px;
+            position: relative;
+        }
+
+        /* Floating Background Elements */
+        .bg-ornament {
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ornament-1 {
+            top: 10%;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .ornament-2 {
+            bottom: 15%;
+            right: 10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--rose-gold) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        /* Album Book */
+        .album-book {
+            width: 95vw;
+            max-width: 1200px;
+            height: 85vh;
+            max-height: 800px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s ease;
+            filter: drop-shadow(0 30px 80px rgba(0,0,0,0.6));
+        }
+
+        /* Album Pages */
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--cream);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transform-style: preserve-3d;
+            transform-origin: left center;
+            transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+            backface-visibility: hidden;
+            overflow: hidden;
+        }
+
+        /* Cover Page - Larger than other pages */
+        .page:first-child {
+            width: 110%;
+            height: 110%;
+            top: -5%;
+            left: -5%;
+            z-index: 10 !important;
+        }
+
+        .page:first-child.flipped {
+            transform: rotateY(-180deg) scale(0.909);
+        }
+
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        .page-content {
+            width: 100%;
+            height: 100%;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .page-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--cream);
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Cover Page */
+        .cover {
+            background: linear-gradient(135deg, #1a237e 0%, #0a0e27 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 107, 157, 0.1) 0%, transparent 40%);
+            animation: rotate-slow 30s linear infinite;
+        }
+
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .cover-title {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cover-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            color: var(--gold);
+            margin-bottom: 1rem;
+            font-weight: 900;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+            animation: title-glow 3s ease-in-out infinite;
+        }
+
+                .cover-title h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 8vw, 5rem);
+            color: var(--cream);
+            margin-bottom: 1rem;
+            font-weight: 900;
+            text-shadow: 0 0 40px rgba(250, 247, 236, 0.6);
+            animation: subtitle-glow 2s ease-in-out infinite;
+        }
+
+                @keyframes subtitle-glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(250, 247, 236, 0.6); }
+            50% { text-shadow: 0 0 40px rgba(250, 247, 236, 0.6), 0 0 50px rgba(250, 247, 236, 0.3); }
+        }
+
+        @keyframes title-glow {
+            0%, 100% { text-shadow: 0 0 40px rgba(212, 175, 55, 0.6); }
+            50% { text-shadow: 0 0 60px rgba(212, 175, 55, 0.9), 0 0 80px rgba(212, 175, 55, 0.5); }
+        }
+
+        .cover-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--cream);
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 3rem;
+        }
+
+        .tap-to-open {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            color: var(--gold);
+            font-weight: 600;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.6), 0 0 60px rgba(212, 175, 55, 0.3); }
+        }
+
+        .tap-to-open:hover {
+            background: var(--gold);
+            color: var(--dark);
+            transform: scale(1.05);
+        }
+
+        /* Page Content Styles */
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--deep-blue);
+            margin-bottom: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 1rem auto 0;
+        }
+
+        /* Wishes Page */
+        .wishes-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .wish-item {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(255, 255, 255, 0.1) 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--gold);
+            transition: all 0.3s ease;
+            animation: fade-in-up 0.6s ease backwards;
+        }
+
+        .wish-item:nth-child(1) { animation-delay: 0.1s; }
+        .wish-item:nth-child(2) { animation-delay: 0.2s; }
+        .wish-item:nth-child(3) { animation-delay: 0.3s; }
+        .wish-item:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .wish-item:hover {
+            transform: translateX(10px);
+            box-shadow: -10px 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .wish-author {
+            font-weight: 700;
+            color: var(--rose-gold);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .wish-message {
+            color: var(--dark);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Gallery Page */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 3rem;
+            margin-top: 2rem;
+            height: 500px;
+            position: relative;
+        }
+
+        .gallery-photo {
+            position: absolute;
+            border-radius: 10px;
+            overflow: visible;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fade-in-rotate 0.8s ease backwards;
+            /* border: 8px solid white; */
+            background: white;
+        }
+
+        /* Collage positioning with random rotations */
+        .gallery-photo:nth-child(1) { 
+            width: 280px;
+            height: 280px;
+            top: 0;
+            left: 0;
+            transform: rotate(-8deg);
+            animation-delay: 0.1s;
+            z-index: 4;
+        }
+
+        .gallery-photo:nth-child(2) { 
+            width: 240px;
+            height: 240px;
+            top: 20px;
+            right: 50px;
+            transform: rotate(5deg);
+            animation-delay: 0.2s;
+            z-index: 3;
+        }
+
+        .gallery-photo:nth-child(3) { 
+            width: 260px;
+            height: 260px;
+            bottom: 40px;
+            left: 40px;
+            transform: rotate(3deg);
+            animation-delay: 0.3s;
+            z-index: 2;
+        }
+
+        .gallery-photo:nth-child(4) { 
+            width: 220px;
+            height: 220px;
+            bottom: 0;
+            right: 80px;
+            transform: rotate(-6deg);
+            animation-delay: 0.4s;
+            z-index: 1;
+        }
+
+        @keyframes fade-in-rotate {
+            from {
+                opacity: 0;
+                transform: translateY(50px) rotate(0deg) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate(var(--rotation)) scale(1);
+            }
+        }
+
+        .gallery-photo:hover {
+            transform: rotate(0deg) scale(1.25) translateY(-20px);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+            z-index: 100 !important;
+            border-color: var(--gold);
+        }
+
+        .gallery-photo img {
+            width: 130%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: block;
+        }
+
+        .gallery-photo:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Gallery Page Background Decorations */
+        .gallery-bg-decor {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.08;
+            z-index: 0;
+        }
+
+        .gallery-star {
+            position: absolute;
+            font-size: 3rem;
+            color: var(--gold);
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        .gallery-star:nth-child(1) {
+            top: 10%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .gallery-star:nth-child(2) {
+            top: 70%;
+            left: 10%;
+            animation-delay: 1s;
+        }
+
+        .gallery-star:nth-child(3) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .gallery-star:nth-child(4) {
+            bottom: 15%;
+            right: 15%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { 
+                opacity: 0.08; 
+                transform: scale(1) rotate(0deg);
+            }
+            50% { 
+                opacity: 0.15; 
+                transform: scale(1.2) rotate(180deg);
+            }
+        }
+
+        .gallery-heart {
+            position: absolute;
+            font-size: 2.5rem;
+            color: var(--rose-gold);
+            animation: float-heart 4s ease-in-out infinite;
+        }
+
+        .gallery-heart:nth-child(1) {
+            top: 30%;
+            right: 5%;
+            animation-delay: 0.5s;
+        }
+
+        .gallery-heart:nth-child(2) {
+            bottom: 25%;
+            left: 5%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float-heart {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.06;
+            }
+            50% { 
+                transform: translateY(-15px) rotate(10deg);
+                opacity: 0.12;
+            }
+        }
+
+        .gallery-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            opacity: 0.1;
+            animation: pulse-circle 4s ease-in-out infinite;
+        }
+
+        .gallery-circle:nth-child(1) {
+            width: 150px;
+            height: 150px;
+            top: 5%;
+            right: 20%;
+            animation-delay: 0s;
+        }
+
+        .gallery-circle:nth-child(2) {
+            width: 100px;
+            height: 100px;
+            bottom: 10%;
+            left: 15%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes pulse-circle {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.1;
+            }
+            50% { 
+                transform: scale(1.15);
+                opacity: 0.15;
+            }
+        }
+
+        .gallery-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold);
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .gallery-sparkle:nth-child(1) { top: 15%; left: 25%; animation-delay: 0s; }
+        .gallery-sparkle:nth-child(2) { top: 45%; right: 30%; animation-delay: 0.5s; }
+        .gallery-sparkle:nth-child(3) { bottom: 20%; left: 35%; animation-delay: 1s; }
+        .gallery-sparkle:nth-child(4) { top: 60%; right: 15%; animation-delay: 1.5s; }
+        .gallery-sparkle:nth-child(5) { top: 35%; left: 10%; animation-delay: 0.7s; }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+
+        /* Polaroid Stick Photos Layout */
+        .polaroid-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 0rem;
+            flex-wrap: wrap;
+            min-height: 500px;
+        }
+
+        .polaroid-stick {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fade-in-up 0.8s ease backwards;
+        }
+
+        .polaroid-stick:nth-child(1) { 
+            transform: rotate(-5deg);
+            animation-delay: 0.1s;
+        }
+
+        .polaroid-stick:nth-child(2) { 
+            transform: rotate(3deg);
+            animation-delay: 0.3s;
+        }
+
+        .polaroid-stick:nth-child(3) { 
+            transform: rotate(-8deg);
+            animation-delay: 0.5s;
+        }
+
+        .polaroid-stick:hover {
+            transform: rotate(0deg) scale(1.1) translateY(-10px);
+            z-index: 10;
+        }
+
+        .polaroid-frame {
+            background: white;
+            padding: 15px 15px 45px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .polaroid-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
+            pointer-events: none;
+        }
+
+        .polaroid-image {
+            width: 400px;
+            height: 240px;
+            object-fit: cover;
+            display: block;
+            position: relative;
+        }
+
+        .polaroid-caption {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            right: 15px;
+            text-align: center;
+            font-family: 'Indie Flower', cursive;
+            font-size: 0.9rem;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+
+        .tape {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 25px;
+            background: rgba(255, 255, 200, 0.4);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Photo Zoom Modal */
+        .photo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .photo-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoom-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes zoom-in {
+            from {
+                transform: scale(0.3) rotate(20deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .modal-photo {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 10px;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+            border: 10px solid white;
+        }
+
+        .modal-caption {
+            text-align: center;
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            border: none;
+            border-radius: 50%;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: var(--accent);
+        }
+
+        /* Background decorations for polaroid pages */
+        .polaroid-bg-element {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.05;
+        }
+
+        .polaroid-bg-1 {
+            top: 10%;
+            left: 5%;
+            width: 100px;
+            height: 100px;
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .polaroid-bg-2 {
+            bottom: 15%;
+            right: 8%;
+            width: 80px;
+            height: 80px;
+            background: var(--rose-gold);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .polaroid-bg-3 {
+            top: 50%;
+            right: 5%;
+            font-size: 3rem;
+            color: var(--gold);
+            animation: twinkle 4s ease-in-out infinite;
+        }
+
+        .photo-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: white;
+            padding: 1.5rem 1rem 1rem;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            font-size: 0.9rem;
+        }
+
+        .gallery-photo:hover .photo-label {
+            transform: translateY(0);
+        }
+
+        /* Timeline Page */
+        .timeline-vertical {
+            position: relative;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--gold), var(--rose-gold));
+            transform: translateX(-50%);
+        }
+
+        .timeline-moment {
+            position: relative;
+            margin-bottom: 3rem;
+            animation: fade-in-up 0.8s ease backwards;
+        }
+
+        .timeline-moment:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-moment:nth-child(2) { animation-delay: 0.3s; }
+        .timeline-moment:nth-child(3) { animation-delay: 0.5s; }
+
+        .timeline-moment:nth-child(odd) .moment-content {
+            margin-right: 55%;
+            text-align: right;
+        }
+
+        .timeline-moment:nth-child(even) .moment-content {
+            margin-left: 55%;
+            text-align: left;
+        }
+
+        .moment-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .moment-dot {
+            position: absolute;
+            top: 1.5rem;
+            width: 20px;
+            height: 20px;
+            background: var(--gold);
+            border: 4px solid var(--cream);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+
+        .timeline-moment:nth-child(odd) .moment-dot {
+            right: calc(45% - 10px);
+        }
+
+        .timeline-moment:nth-child(even) .moment-dot {
+            left: calc(45% - 10px);
+        }
+
+        .moment-date {
+            font-weight: 700;
+            color: var(--rose-gold);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .moment-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--deep-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .moment-desc {
+            color: var(--dark);
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        /* Final Message Page */
+        .final-page {
+            background: linear-gradient(135deg, #1a237e 0%, #0a0e27 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-page::before {
+            content: '✨';
+            position: absolute;
+            font-size: 11rem;
+            opacity: 0.05;
+            animation: rotate-slow 20s linear infinite;
+        }
+
+        .final-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .final-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.0rem, 5vw, 4rem);
+            color: var(--gold);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+        }
+
+        .final-content p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            line-height: 1.8;
+            color: var(--cream);
+            margin-bottom: 1.2rem;
+        }
+
+        .signatures {
+            margin-top: 1rem;
+            font-style: italic;
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2rem;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-controls:hover {
+            background: rgba(0, 0, 0, 0.5);
+             transition: all 0.3s ease;
+        }
+
+        .nav-btn {
+            padding: 0.8rem 2rem;
+            background: rgba(212, 175, 55, 0.2);
+            border: 2px solid var(--gold);
+            border-radius: 30px;
+            color: var(--gold);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Raleway', sans-serif;
+            font-size: 1rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gold);
+            color: var(--dark);
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--cream);
+            font-size: 1rem;
+        }
+
+        .page-dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .page-dot.active {
+            background: var(--gold);
+            transform: scale(1.3);
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            position: absolute;
+            animation: confetti-fall 3s linear;
+            pointer-events: none;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .wishes-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-moment:nth-child(odd) .moment-content,
+            .timeline-moment:nth-child(even) .moment-content {
+                margin: 0 0 0 3rem;
+                text-align: left;
+            }
+
+            .timeline-line {
+                left: 1rem;
+            }
+
+            .timeline-moment:nth-child(odd) .moment-dot,
+            .timeline-moment:nth-child(even) .moment-dot {
+                left: 0.5rem;
+            }
+
+            .nav-controls {
+                bottom: 1rem;
+                padding: 0.8rem 1rem;
+                gap: 1rem;
+            }
+
+            .nav-btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Passcode Screen -->
+    <div id="passcode-screen">
+        <div class="particles" id="particles"></div>
+        <div class="passcode-box">
+            <h1>🎉</h1>
+            <p>Enter the secret code to unlock</p>
+            <div class="passcode-input-group">
+                <input type="password" maxlength="1" class="passcode-digit" id="digit1">
+                <input type="password" maxlength="1" class="passcode-digit" id="digit2">
+                <input type="password" maxlength="1" class="passcode-digit" id="digit3">
+                <input type="password" maxlength="1" class="passcode-digit" id="digit4">
+            </div>
+            <button class="unlock-btn" onclick="unlockAlbum()">UNLOCK</button>
+            <p class="error-msg" id="error-msg"></p>
+        </div>
+    </div>
+
+    <!-- Album Container -->
+    <div id="album-container">
+        <div class="bg-ornament ornament-1"></div>
+        <div class="bg-ornament ornament-2"></div>
+        
+        <div class="album-wrapper">
+            <div class="album-book" id="album-book">
+                
+                <!-- Page 0: Cover -->
+                <div class="page" id="page-0" style="z-index: 10;">
+                    <div class="page-content cover">
+                        <div class="cover-title">
+                            <h2>Happy Birthday</h2>
+                             <h1>Mr. Indika</h1>
+                            <p class="cover-subtitle">A CELEBRATION OF YOU</p>
+                            <div class="tap-to-open" onclick="nextPage()">TAP TO OPEN ✨</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 1: Introduction -->
+                <div class="page" id="page-1" style="z-index: 9;">
+                    <div class="page-content">
+                        <h2 class="page-title">To Our Guiding Star</h2>
+                        <div style="text-align: center; color: var(--dark); line-height: 2; font-size: 1.2rem; max-width: 600px; margin: 1rem auto;">
+                            <p style="margin-bottom: 2rem;">
+                                Today, we celebrate more than just a birthday. We celebrate a leader who inspires, 
+                                a mentor who guides, a friend who cares, and a person who makes every day brighter.
+                            </p>
+                            <p style="margin-bottom: 2rem;">
+                                Your humbleness touches our hearts. Your affection warms our spirits. 
+                                Your wisdom lights our path. You're not just our boss—you're family, you're a brother.
+                            </p>
+                            <p style="font-style: italic; color: var(--rose-gold); font-size: 1.1rem;">
+                                This album is filled with love, memories, and gratitude from all of us. ✨
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 2: Birthday Wishes Part 1 -->
+                <div class="page" id="page-2" style="z-index: 8;">
+                    <div class="page-content">
+                        <h2 class="page-title">Heartfelt Wishes</h2>
+                        <div class="wishes-layout">
+                            <div class="wish-item">
+                                <div class="wish-author">— Thilanka</div>
+                                <div class="wish-message">
+                                   May you have a healthy tomorrow and the good fortune of being surrounded by virtuous people in a bright future
+                                </div>
+                            </div>
+                            <div class="wish-item">
+                                <div class="wish-author">— Devindi</div>
+                                <div class="wish-message">
+                                    Happy Birthday sir ! Wishing you a healthy and successful year ahead. Your support has played an important role in my professional growth, and I’m very grateful for it.
+                                  
+                                </div>
+                            </div>
+                            <div class="wish-item">
+                                <div class="wish-author">— Udika</div>
+                                <div class="wish-message">
+                                   Happy Birthday, Sir 🎉 Wishing you good health, happiness, and continued success. Thank you for being not just a great leader, but also a mentor, brother, and friend to all of us. Have a wonderful year ahead!”
+                                </div>
+                            </div>
+                            <div class="wish-item">
+                                <div class="wish-author">— Upeka</div>
+                                <div class="wish-message">
+                                        Your affectionate nature makes you truly special. You've shown us that success 
+                                    and kindness go hand in hand. Happy birthday to you!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 3: Birthday Wishes Part 2 -->
+                <div class="page" id="page-3" style="z-index: 7;">
+                    <div class="page-content">
+                        <h2 class="page-title">More Love & Wishes</h2>
+                        <div class="wishes-layout">
+                            <div class="wish-item">
+                                <div class="wish-author">— Pulasthi</div>
+                                <div class="wish-message">
+                                  
+                                     Your strategic vision combined with your humble approach has taught us so much. 
+                                    Thank you for always making time for us, no matter how busy you are. Happy Birthday!
+                                </div>
+                            </div>
+                            <div class="wish-item">
+                                <div class="wish-author">— Thilini</div>
+                                <div class="wish-message">
+                                    Happy Birthday, Sir. I would like to sincerely thank you for the guidance, support, and opportunities you have given me to learn, take on new challenges, and grow both professionally and personally. Your leadership, encouragement, and continuous guidance have been truly inspiring. Wishing you good health, happiness, and continued success in the years ahead.
+                                </div>
+                            </div>
+                            <div class="wish-item">
+                                <div class="wish-author">— Bathiya</div>
+                                <div class="wish-message">
+                                    Working with you has been a privilege. Your wisdom, patience, and genuine care 
+                                    make every day meaningful.  Here's to another amazing year together! නිදුක්, නිරෝගී, ජය, සතුට, සාමය පිරුණු සුභ අනාගතයක් සුභ උපන්දිනයක් වේවා! 
+                                </div>
+                            </div>
+                            <div class="wish-item">
+                                <div class="wish-author">— The Entire Team ❤️</div>
+                                <div class="wish-message">
+                                    From all of us: Thank you for being you. For your guidance, patience, humor, 
+                                    and unwavering support. You're family. Here's to celebrating you always!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 4: Photo Memories -->
+                <div class="page" id="page-4" style="z-index: 6;">
+                    <div class="page-content">
+                        <h2 class="page-title">Cherished Memories So Far </h2>
+                        
+                        <!-- Background Decorations -->
+                        <div class="gallery-bg-decor gallery-star">✨</div>
+                        <div class="gallery-bg-decor gallery-star">✨</div>
+                        <div class="gallery-bg-decor gallery-star">✨</div>
+                        <div class="gallery-bg-decor gallery-star">✨</div>
+                        <div class="gallery-bg-decor gallery-heart">💛</div>
+                        <div class="gallery-bg-decor gallery-heart">💛</div>
+                        <div class="gallery-bg-decor gallery-circle"></div>
+                        <div class="gallery-bg-decor gallery-circle"></div>
+                        <div class="gallery-bg-decor gallery-sparkle"></div>
+                        <div class="gallery-bg-decor gallery-sparkle"></div>
+                        <div class="gallery-bg-decor gallery-sparkle"></div>
+                        <div class="gallery-bg-decor gallery-sparkle"></div>
+                        <div class="gallery-bg-decor gallery-sparkle"></div>
+                        
+                        <div class="gallery-grid">
+                            <div class="gallery-photo">
+                                <img src="./assets/photos/1.jpg" alt="Team celebration">
+                               
+                            </div>
+
+
+                            <div class="gallery-photo">
+                                <img src="./assets/photos/6.jpg" alt="Achievement">
+                                
+                            </div>
+                        </div>
+                                                <div class="gallery-grid">
+
+                            <div class="gallery-photo">
+                                <img src="./assets/photos/2.jpg" alt="Coffee break">
+                                
+                            </div>
+                                                        <div class="gallery-photo">
+                                <img src="./assets/photos/3.jpg" alt="Coffee break">
+                                
+                            </div>
+                            <!-- <div class="gallery-photo">
+                                <img src="./assets/photos/team.jpg" alt="Achievement">
+                                
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 5: Polaroid Photos Set 1 -->
+                <div class="page" id="page-5" style="z-index: 5;">
+                    <div class="page-content">
+                        <h2 class="page-title">Team Bonding Moments</h2>
+                        
+                        <!-- Background elements -->
+                        <div class="polaroid-bg-element polaroid-bg-1"></div>
+                        <div class="polaroid-bg-element polaroid-bg-2"></div>
+                        <div class="polaroid-bg-element polaroid-bg-3">📸</div>
+                        
+                        <div class="polaroid-container">
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="./assets/photos/team_lunch.jpg" alt="Team lunch" data-caption="Team lunch gathering 🍽️">
+                                </div>
+                                <div class="polaroid-caption">Team Lunch 2024</div>
+                            </div>
+                            
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="./assets/photos/team.jpg" alt="Team outing" data-caption="Adventure day with the team 🏞️">
+                                </div>
+                                <div class="polaroid-caption">Weekend Getaway</div>
+                            </div>
+                            
+                            <!-- <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400" alt="Office fun" data-caption="Fun times at the office 🎉">
+                                </div>
+                                <div class="polaroid-caption">Office Fun Day</div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 6: Polaroid Photos Set 2 -->
+                <div class="page" id="page-6" style="z-index: 4;">
+                    <div class="page-content">
+                        <h2 class="page-title">Bonus Moments!</h2>
+                        
+                        <!-- Background elements -->
+                        <div class="polaroid-bg-element polaroid-bg-1"></div>
+                        <div class="polaroid-bg-element polaroid-bg-2"></div>
+                        <div class="polaroid-bg-element polaroid-bg-3">🎊</div>
+                        
+                        <div class="polaroid-container">
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="./assets/photos/4.jpg" alt="Awards night" data-caption="Goal Tour  🏆">
+                                </div>
+                                <div class="polaroid-caption">Goal Tour</div>
+                            </div>
+                            
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="./assets/photos/5.jpg" alt="Project success" data-caption="Goal Tour | Focus on horizon 🎯">
+                                </div>
+                                <div class="polaroid-caption">Goal Tour</div>
+                            </div>
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="./assets/photos/7.jpg" alt="Project success" data-caption="Goal Tour 🤝">
+                                </div>
+                                <div class="polaroid-caption">Goal Tour</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 7: Polaroid Photos Set 3 -->
+                <!-- <div class="page" id="page-7" style="z-index: 3;">
+                    <div class="page-content">
+                        <h2 class="page-title">Everyday Magic</h2>
+
+                        <div class="polaroid-bg-element polaroid-bg-1"></div>
+                        <div class="polaroid-bg-element polaroid-bg-2"></div>
+                        <div class="polaroid-bg-element polaroid-bg-3">💫</div>
+                        
+                        <div class="polaroid-container">
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400" alt="Mentoring" data-caption="Mentoring the next generation 👨‍🏫">
+                                </div>
+                                <div class="polaroid-caption">Mentoring Session</div>
+                            </div>
+                            
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400" alt="Brainstorm" data-caption="Creative brainstorming sessions 💡">
+                                </div>
+                                <div class="polaroid-caption">Brainstorm Time</div>
+                            </div>
+                            
+                            <div class="polaroid-stick" onclick="openPhotoModal(this)">
+                                <div class="tape"></div>
+                                <div class="polaroid-frame">
+                                    <img class="polaroid-image" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400" alt="Team spirit" data-caption="Team spirit in action 🤝">
+                                </div>
+                                <div class="polaroid-caption">Team Spirit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- Page 8: Timeline of Memories -->
+                <!-- <div class="page" id="page-8" style="z-index: 2;">
+                    <div class="page-content">
+                        <h2 class="page-title">Our Journey Together</h2>
+                        <div class="timeline-vertical">
+                            <div class="timeline-line"></div>
+                            
+                            <div class="timeline-moment">
+                                <div class="moment-dot"></div>
+                                <div class="moment-content">
+                                    <div class="moment-date">January 2022</div>
+                                    <div class="moment-title">A New Beginning</div>
+                                    <div class="moment-desc">
+                                        The day you joined, you walked in with warmth and made everyone feel welcome. 
+                                        We knew something special had begun.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-moment">
+                                <div class="moment-dot"></div>
+                                <div class="moment-content">
+                                    <div class="moment-date">March 2023</div>
+                                    <div class="moment-title">Breaking Barriers</div>
+                                    <div class="moment-desc">
+                                        That huge client win! Your strategic brilliance and calm leadership 
+                                        showed us what's possible when we work together.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-moment">
+                                <div class="moment-dot"></div>
+                                <div class="moment-content">
+                                    <div class="moment-date">November 2024</div>
+                                    <div class="moment-title">Building Bonds</div>
+                                    <div class="moment-desc">
+                                        The team retreat you organized brought us closer as a family. 
+                                        Every detail showed your care for each of us.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- Page 9: Final Message -->
+                <div class="page" id="page-9" style="z-index: 1;">
+                    <div class="page-content final-page">
+                        <div class="final-content">
+                            <h2>With All Our Love</h2>
+                            <p>
+                                Dear Boss, dear Brother, dear Friend—
+                            </p>
+                            <p>
+                                Today we honor not just the years you've radiant, but the countless lives you've touched 
+                                and the hearts you've inspired. Your humbleness teaches us grace. Your affection reminds 
+                                us to care. Your leadership shows us the way forward.
+                            </p>
+                            <p>
+                                May this year shower you with endless joy, abundant peace, and all the love you so 
+                                freely give to others. You deserve every bit of happiness this world has to offer.
+                            </p>
+                            <p style="font-size: 1rem; margin-top: 1rem;">🎂✨🎉</p>
+                            <p style="font-size: 1rem;"> With gratitude, respect, and love,<br>
+                                <b>Your Team, Your Deedmed Family</b></p>
+                            <!-- <div class="signatures">
+                                With gratitude, respect, and love,<br>
+                                Your Team, Your Family
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Photo Zoom Modal -->
+        <div class="photo-modal" id="photoModal" onclick="closePhotoModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closePhotoModal()">✕</button>
+                <img class="modal-photo" id="modalPhoto" src="" alt="">
+                <div class="modal-caption" id="modalCaption"></div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="nav-controls">
+            <button class="nav-btn" id="prev-btn" onclick="prevPage()" disabled>← PREVIOUS</button>
+            <div class="page-indicator">
+                <span class="page-dot active" data-page="0"></span>
+                <span class="page-dot" data-page="1"></span>
+                <span class="page-dot" data-page="2"></span>
+                <span class="page-dot" data-page="3"></span>
+                <span class="page-dot" data-page="4"></span>
+                <span class="page-dot" data-page="5"></span>
+                <span class="page-dot" data-page="6"></span>
+                <span class="page-dot" data-page="7"></span>
+                <span class="page-dot" data-page="8"></span>
+                <span class="page-dot" data-page="9"></span>
+            </div>
+            <button class="nav-btn" id="next-btn" onclick="nextPage()">NEXT →</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const PASSCODE = '1225'; // Change this to your desired 4-digit code
+        let currentPage = 0;
+        const totalPages = 10; // Increased from 7 to 10 for additional photo pages
+        
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Passcode functionality
+        function setupPasscodeInputs() {
+            const digits = document.querySelectorAll('.passcode-digit');
+            
+            
+            digits.forEach((digit, index) => {
+                digit.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1 && index < digits.length - 1) {
+                        digits[index + 1].focus();
+                    }
+                });
+
+                digit.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                        digits[index - 1].focus();
+                    }
+                    if (e.key === 'Enter') {
+                        unlockAlbum();
+                    }
+                });
+            });
+
+            digits[0].focus();
+        }
+
+        function unlockAlbum() {
+            const digits = document.querySelectorAll('.passcode-digit');
+            const enteredCode = Array.from(digits).map(d => d.value).join('');
+            const errorMsg = document.getElementById('error-msg');
+
+            if (enteredCode === PASSCODE) {
+                createConfetti();
+                setTimeout(() => {
+                    document.getElementById('passcode-screen').classList.add('hidden');
+                    setTimeout(() => {
+                        document.getElementById('album-container').classList.add('visible');
+                    }, 500);
+                }, 1000);
+            } else {
+                errorMsg.classList.add('show');
+                digits.forEach(d => {
+                    d.value = '';
+                    d.style.borderColor = 'var(--accent)';
+                });
+                digits[0].focus();
+
+                setTimeout(() => {
+                    errorMsg.classList.remove('show');
+                    digits.forEach(d => d.style.borderColor = '');
+                }, 3000);
+            }
+        }
+
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#d4af37', '#ff6b9d', '#b76e79', '#faf7f2'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Page navigation
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                const currentPageEl = document.getElementById(`page-${currentPage}`);
+                currentPageEl.classList.add('flipped');
+                currentPage++;
+                updateNavigation();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                const currentPageEl = document.getElementById(`page-${currentPage}`);
+                currentPageEl.classList.remove('flipped');
+                updateNavigation();
+            }
+        }
+
+        // function updateNavigation() {
+        //     const prevBtn = document.getElementById('prev-btn');
+        //     const nextBtn = document.getElementById('next-btn');
+        //     const dots = document.querySelectorAll('.page-dot');
+
+        //     prevBtn.disabled = currentPage === 0;
+        //     nextBtn.disabled = currentPage === totalPages - 1;
+
+        //     dots.forEach((dot, index) => {
+        //         dot.classList.toggle('active', index === currentPage);
+        //     });
+
+        //     // Trigger confetti on final page
+        //     if (currentPage === totalPages - 1) {
+        //         setTimeout(createConfetti, 500);
+        //     }
+        // }
+
+function updateNavigation() {
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const dots = document.querySelectorAll('.page-dot');
+
+    prevBtn.disabled = currentPage === 0;
+    nextBtn.disabled = currentPage === totalPages - 1;
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentPage);
+    });
+
+    // Fix: Ensure the current active page is always visually on top
+    // by slightly boosting the z-index of the page we just revealed
+    for (let i = 0; i < totalPages; i++) {
+        const pg = document.getElementById(`page-${i}`);
+        if (i < currentPage) {
+            pg.style.zIndex = 20 + i; // Flipped pages
+        } else {
+            pg.style.zIndex = 10 - i; // Pages yet to be flipped
+        }
+    }
+
+    if (currentPage === totalPages - 1) {
+        setTimeout(createConfetti, 500);
+    }
+}
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('album-container').classList.contains('visible')) {
+                if (e.key === 'ArrowRight') nextPage();
+                if (e.key === 'ArrowLeft') prevPage();
+                if (e.key === 'Escape') closePhotoModal();
+            }
+        });
+
+        // Photo Modal Functions
+        function openPhotoModal(polaroidElement) {
+            const img = polaroidElement.querySelector('.polaroid-image');
+            const modal = document.getElementById('photoModal');
+            const modalPhoto = document.getElementById('modalPhoto');
+            const modalCaption = document.getElementById('modalCaption');
+            
+            modalPhoto.src = img.src;
+            modalCaption.textContent = img.dataset.caption || '';
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePhotoModal() {
+            const modal = document.getElementById('photoModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Swipe navigation for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextPage();
+            if (touchEndX > touchStartX + 50) prevPage();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+           
+
+            createParticles();
+            setupPasscodeInputs();
+            updateNavigation();
+             
+        });
+    </script>
+</body>
+</html>
